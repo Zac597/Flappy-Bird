@@ -90,15 +90,74 @@ const flappyBird = {
   }
 }
 
-function loop() {
-  flappyBird.atualiza();
-  planoDeFundo.desenha();
-  chao.desenha();
-  flappyBird.desenha();
-
-
-  requestAnimationFrame(loop);
-
+/// [MensagemGetReady]
+const MensagemGetReady = {
+  sX: 134,
+  sY: 0,
+  w: 174,
+  h: 152,
+  x: (canvas.width / 2) - 174 / 2,
+  y: 50,
+  desenha() {
+    contexto.drawImage(
+      sprites,
+      MensagemGetReady.sX, MensagemGetReady.sY,
+      MensagemGetReady.w, MensagemGetReady.h,
+      MensagemGetReady.x, MensagemGetReady.y,
+      MensagemGetReady.w, MensagemGetReady.h,
+    );
+  }
 }
 
+// [Telas]
+
+let telaAtiva = {};
+function mudaParaTela(novaTela){
+  telaAtiva = novaTela;
+}
+
+const Telas = {
+  INICIO: {
+    desenha() {
+      planoDeFundo.desenha();
+      chao.desenha();
+      flappyBird.desenha();
+      MensagemGetReady.desenha();
+    },
+    click() {
+      mudaParaTela(Telas.JOGO);
+    },
+    atualiza() {
+
+    }
+  }
+}
+
+  Telas.JOGO = {
+    desenha() {
+      planoDeFundo.desenha();
+      chao.desenha();
+      flappyBird.desenha();
+    },
+    atualiza() {
+      flappyBird.atualiza();
+  }
+}
+
+function loop() {
+
+  telaAtiva.desenha();
+  telaAtiva.atualiza();
+
+  requestAnimationFrame(loop);
+}
+
+window.addEventListener('click', function(){
+  if (telaAtiva.click) {
+    telaAtiva.click();
+  }
+
+});
+
+mudaParaTela(Telas.INICIO);
 loop();
